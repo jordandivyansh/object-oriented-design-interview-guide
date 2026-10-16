@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An original interview field guide to object-oriented design, UML, design principles, and sixteen system design projects.">
+  <meta name="theme-color" content="#f5f1e8">
+  <title>Object-Oriented Design Interview Guide</title>
+  <script>document.documentElement.dataset.theme=localStorage.getItem('ood-guide:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')</script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="home">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="OOD Field Guide home">
+      <span class="brand-mark">{ }</span>
+      <span>OOD Field Guide</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary navigation">
+      <a href="#foundations">Foundations</a>
+      <a href="#projects">Projects</a>
+      <a href="#practice">Practice plan</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Switch colour theme"><span aria-hidden="true">◐</span><span class="theme-label">Theme</span></button>
+  </header>
+
+  <main>
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="eyebrow">Low-level design · interview operating system</p>
+        <h1>Design objects that survive the follow-up question.</h1>
+        <p class="lede">A practical path from requirements to responsibilities, diagrams, state, and trade-offs—plus sixteen complete project blueprints to practise aloud.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="reader.html?type=fundamental&id=object-oriented-basics">Start with the foundations</a>
+          <a class="button button-quiet" href="#projects">Browse projects</a>
+        </div>
+      </div>
+      <aside class="hero-board" aria-label="Interview workflow">
+        <p class="board-label">The 7-step interview loop</p>
+        <ol>
+          <li><span>01</span> Clarify scope</li>
+          <li><span>02</span> Define use cases</li>
+          <li><span>03</span> Model objects</li>
+          <li><span>04</span> Assign responsibilities</li>
+          <li><span>05</span> Walk key flows</li>
+          <li><span>06</span> Stress edge cases</li>
+          <li><span>07</span> Explain trade-offs</li>
+        </ol>
+      </aside>
+    </section>
+
+    <section class="metric-strip" aria-label="Guide coverage">
+      <div><strong>7</strong><span>foundation modules</span></div>
+      <div><strong>16</strong><span>design projects</span></div>
+      <div><strong>100+</strong><span>interview prompts</span></div>
+      <div><strong>1</strong><span>repeatable method</span></div>
+    </section>
+
+    <section class="section shell" id="foundations">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Part I · Build the language</p>
+          <h2>OOD and UML foundations</h2>
+        </div>
+        <p>Learn the minimum notation and reasoning needed to make design decisions visible.</p>
+      </div>
+      <div class="card-grid foundation-grid" id="foundation-grid"></div>
+    </section>
+
+    <section class="section projects-section" id="projects">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Part II · Practise the decisions</p>
+            <h2>Sixteen interview projects</h2>
+          </div>
+          <p>Each blueprint covers requirements, domain objects, key flows, APIs, edge cases, and design questions.</p>
+        </div>
+        <div class="filter-bar">
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <span class="sr-only">Search projects</span>
+            <input id="project-search" type="search" placeholder="Search projects, patterns, or concepts…" autocomplete="off">
+          </label>
+          <div class="filter-chips" aria-label="Project filters">
+            <button class="chip is-active" type="button" data-filter="all">All</button>
+            <button class="chip" type="button" data-filter="Core">Core</button>
+            <button class="chip" type="button" data-filter="Advanced">Advanced</button>
+          </div>
+        </div>
+        <div class="card-grid project-grid" id="project-grid"></div>
+        <p class="empty-state" id="empty-state" hidden>No project matches that search.</p>
+      </div>
+    </section>
+
+    <section class="section shell" id="practice">
+      <div class="practice-panel">
+        <div>
+          <p class="eyebrow">Make it interview-ready</p>
+          <h2>A four-pass practice plan</h2>
+          <p>Repeat one project until you can defend the design without depending on a memorized diagram.</p>
+        </div>
+        <div class="practice-steps">
+          <article><span>01</span><h3>Read</h3><p>Study the brief and identify the business invariants.</p></article>
+          <article><span>02</span><h3>Rebuild</h3><p>Close the guide and draw the model from a blank page.</p></article>
+          <article><span>03</span><h3>Stress</h3><p>Add concurrency, failures, lifecycle changes, and one new requirement.</p></article>
+          <article><span>04</span><h3>Explain</h3><p>Present the design in 20 minutes and answer the prompts aloud.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer shell">
+    <p><strong>OOD Field Guide</strong> · Independently written interview study material.</p>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
