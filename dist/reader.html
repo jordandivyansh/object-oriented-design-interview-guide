@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Object-oriented design interview lesson and project blueprint.">
+  <meta name="theme-color" content="#f5f1e8">
+  <title>OOD Field Guide</title>
+  <script>document.documentElement.dataset.theme=localStorage.getItem('ood-guide:theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')</script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="reader">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="OOD Field Guide home"><span class="brand-mark">{ }</span><span>OOD Field Guide</span></a>
+    <nav class="top-nav" aria-label="Primary navigation"><a href="index.html#foundations">Foundations</a><a href="index.html#projects">Projects</a></nav>
+    <button class="theme-toggle" type="button" aria-label="Switch colour theme"><span aria-hidden="true">◐</span><span class="theme-label">Theme</span></button>
+  </header>
+  <main class="reader-shell" id="reader-root">
+    <p class="loading">Loading guide…</p>
+  </main>
+  <footer class="site-footer shell"><p><strong>OOD Field Guide</strong> · Independently written interview study material.</p><a href="index.html">All modules</a></footer>
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
