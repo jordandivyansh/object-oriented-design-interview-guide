@@ -1,0 +1,348 @@
+window.OOD_GUIDE = {
+  fundamentals: [
+    {
+      id: "object-oriented-basics",
+      title: "Object-Oriented Basics",
+      kicker: "Foundation 01",
+      summary: "Build a precise vocabulary for objects, responsibilities, collaboration, and change.",
+      minutes: 30,
+      why: "OOD interviews reward clear boundaries more than clever syntax. Start by modelling behaviour, ownership, and invariants—not by listing nouns.",
+      concepts: [
+        ["Objects and identity", "An object combines state with behaviour and has an identity that survives state changes. A BankAccount is still the same account after a deposit."],
+        ["Encapsulation", "Keep invariants behind a small public interface. Call account.withdraw(amount) instead of editing balance from outside."],
+        ["Abstraction", "Expose the decision a caller needs and hide the mechanism. A PaymentMethod can authorize an amount without revealing gateway details."],
+        ["Inheritance vs composition", "Inheritance models a stable is-a relationship. Composition assembles behaviour and is safer when policies change independently."],
+        ["Polymorphism", "Depend on a capability, not a concrete class. Multiple pricing strategies can implement calculate(cart) without branching in Checkout."],
+        ["Cohesion and coupling", "Prefer classes with one focused purpose and dependencies expressed through narrow interfaces."],
+        ["SOLID as review questions", "Ask whether a class has one reason to change, whether extensions avoid edits, and whether consumers depend only on what they use."]
+      ],
+      checklist: ["State each class invariant", "Assign every behaviour to one owner", "Prefer value objects for money, dates, and identifiers", "Use composition for replaceable policies", "Name interfaces by capability"],
+      example: { title: "Encapsulate a booking invariant", code: "class SeatHold {\n  private status = 'ACTIVE';\n\n  confirm() {\n    if (this.status !== 'ACTIVE') throw new Error('Hold unavailable');\n    this.status = 'CONFIRMED';\n  }\n}" },
+      questions: ["When is inheritance appropriate?", "How does encapsulation protect invariants?", "What makes a class highly cohesive?", "Why are value objects useful?"]
+    },
+    {
+      id: "oo-analysis-and-design",
+      title: "OO Analysis and Design",
+      kicker: "Foundation 02",
+      summary: "Turn a fuzzy prompt into scope, actors, use cases, objects, and testable decisions.",
+      minutes: 35,
+      why: "Analysis decides what the system must do; design decides how collaborating objects will do it. Mixing them too early creates premature classes.",
+      concepts: [
+        ["Clarify scope", "Identify the primary actor, the core outcome, explicit exclusions, and the scale relevant to the interview."],
+        ["Extract use cases", "Phrase use cases as actor goals: reserve a seat, return a book, settle an order. Include failure and cancellation paths."],
+        ["Find domain concepts", "Use nouns as candidates, not automatic classes. Keep concepts that own data, behaviour, or a meaningful rule."],
+        ["Assign responsibilities", "Use information expert: place behaviour near the information required to perform it."],
+        ["Model collaborations", "Walk one happy path and one failure path. Each call should have a clear reason and destination."],
+        ["Iterate with constraints", "Add concurrency, extensibility, persistence, and integration details only after the central model works."]
+      ],
+      checklist: ["Define actors and system boundary", "List functional and quality requirements", "State assumptions", "Model the core flow", "Challenge with failure and concurrency", "Explain trade-offs"],
+      example: { title: "A reliable interview sequence", code: "clarify → use cases → domain model\n        → APIs → object interactions\n        → edge cases → trade-offs" },
+      questions: ["How do analysis and design differ?", "How do you identify class candidates?", "What belongs outside the system boundary?", "When should persistence enter the discussion?"]
+    },
+    {
+      id: "uml-overview",
+      title: "What is UML?",
+      kicker: "Foundation 03",
+      summary: "Use diagrams as compact thinking tools—not as ceremony.",
+      minutes: 20,
+      why: "UML gives interviewer and candidate a shared visual language. The goal is communication, so use only the notation that clarifies a decision.",
+      concepts: [
+        ["Structural diagrams", "Class, component, and deployment diagrams show what exists and how parts relate."],
+        ["Behavioural diagrams", "Use case, activity, state, and sequence diagrams show goals, workflows, lifecycles, and collaborations."],
+        ["Relationship vocabulary", "Association is a connection; aggregation is a weak whole-part relation; composition gives the whole lifecycle ownership; generalization represents inheritance."],
+        ["Useful informality", "An interview diagram can omit visibility markers or types if the meaning remains unambiguous."],
+        ["Consistency", "Names, multiplicities, messages, and states should agree across diagrams and code sketches."]
+      ],
+      checklist: ["Choose the diagram for the question", "Label important relationships", "Show multiplicity where it affects rules", "Keep one level of abstraction", "Narrate while drawing"],
+      example: { title: "Choose by question", code: "Who uses it?      → use case\nWhat owns what?    → class\nWho calls whom?    → sequence\nWhat happens next? → activity\nHow can it change? → state" },
+      questions: ["Which UML diagrams help most in LLD?", "What does composition imply?", "When should multiplicity be shown?", "Can UML be useful without strict notation?"]
+    },
+    {
+      id: "use-case-diagrams",
+      title: "Use Case Diagrams",
+      kicker: "Foundation 04",
+      summary: "Define actors, system boundaries, and goals before designing internals.",
+      minutes: 25,
+      why: "A use case diagram prevents a polished solution to the wrong problem. It is a scope map, not a workflow diagram.",
+      concepts: [
+        ["Actor", "A role outside the system that pursues a goal: Member, Librarian, Payment Gateway. An actor is not necessarily one person."],
+        ["Use case", "A result valuable to an actor, named with a verb phrase such as Borrow Book or Cancel Reservation."],
+        ["System boundary", "A box separates responsibilities owned by the system from external services and people."],
+        ["Include", "Use when a reusable sub-flow always occurs, such as Authenticate User during Withdraw Cash."],
+        ["Extend", "Use for optional or conditional behaviour, such as Apply Coupon extending Checkout."],
+        ["Generalization", "Specialized actors or use cases inherit behaviour from a broader role or goal."]
+      ],
+      checklist: ["Actors are roles", "Use cases express outcomes", "Boundary is explicit", "Include is mandatory reuse", "Extend is conditional", "Avoid implementation details"],
+      example: { title: "Ticket booking scope", code: "Customer → Search Shows\nCustomer → Hold Seats\nCustomer → Confirm Booking\nConfirm Booking «include» Process Payment\nApply Promotion «extend» Confirm Booking" },
+      questions: ["How do include and extend differ?", "Can a database be an actor?", "What makes a good use-case name?", "Why is sequence not shown here?"]
+    },
+    {
+      id: "class-diagrams",
+      title: "Class Diagrams",
+      kicker: "Foundation 05",
+      summary: "Express responsibilities, contracts, relationships, and lifecycle ownership.",
+      minutes: 40,
+      why: "The class diagram is the backbone of most LLD interviews. It should explain both the static model and why changes stay localized.",
+      concepts: [
+        ["Class compartments", "Show name, important attributes, and behaviour. Omit accessors unless they express a rule."],
+        ["Association and multiplicity", "One Order contains one or more OrderItems; one Product may appear in many items."],
+        ["Aggregation vs composition", "Use composition when the part belongs exclusively to the whole and shares its lifecycle."],
+        ["Generalization", "Use inheritance only when subtype substitutability is meaningful, not merely to reuse code."],
+        ["Interface realization", "A dashed realization expresses that a class fulfils a contract such as NotificationChannel."],
+        ["Dependencies", "Constructor-injected dependencies make collaboration explicit and easier to test."]
+      ],
+      checklist: ["Show behaviour, not data bags", "Mark important multiplicities", "Model lifecycle ownership", "Keep services stateless where practical", "Depend on interfaces at volatile boundaries"],
+      example: { title: "A compact class view", code: "Order 1 ◆── 1..* OrderItem\nOrder ─── 1 Payment\nPaymentService ──▷ PaymentGateway\nCardGateway ┄▷ PaymentGateway" },
+      questions: ["Association or composition?", "How do you avoid an anemic domain model?", "What does dependency inversion look like here?", "Which classes protect invariants?"]
+    },
+    {
+      id: "sequence-diagrams",
+      title: "Sequence Diagrams",
+      kicker: "Foundation 06",
+      summary: "Trace one scenario across actors and objects in time order.",
+      minutes: 30,
+      why: "Sequence diagrams expose missing responsibilities, excessive coupling, and unclear transaction boundaries that a class diagram can hide.",
+      concepts: [
+        ["Lifelines", "Each vertical line represents a participant. Order them from initiating actor through boundary, control, entity, and external service."],
+        ["Messages", "A solid arrow is a call; a dashed arrow can show a return. Name messages as intentions, not transport details."],
+        ["Activation", "An activation indicates when a participant is executing or waiting for a nested call."],
+        ["Combined fragments", "alt models alternatives, opt optional behaviour, loop repetition, and par concurrent paths."],
+        ["Creation and destruction", "Show when an object begins or ends if lifecycle is central to the design."],
+        ["Transactions", "Mark where atomicity is required and where an external call makes a distributed workflow necessary."]
+      ],
+      checklist: ["One diagram per scenario", "Start from an actor goal", "Show meaningful decisions", "Include failure response", "Identify transaction boundaries", "Keep participants at one abstraction level"],
+      example: { title: "Seat confirmation flow", code: "Customer → BookingAPI: confirm(holdId)\nBookingAPI → Hold: validate()\nBookingAPI → Payment: authorize(amount)\nalt approved\n  BookingAPI → Booking: create()\nelse declined\n  BookingAPI → Hold: release()\nend" },
+      questions: ["What belongs on a lifeline?", "How do you show alternate paths?", "Where should a transaction begin?", "When is a sequence diagram too detailed?"]
+    },
+    {
+      id: "activity-diagrams",
+      title: "Activity Diagrams",
+      kicker: "Foundation 07",
+      summary: "Map branching workflows, parallel work, and responsibility hand-offs.",
+      minutes: 25,
+      why: "Activity diagrams are ideal when the hard part is process logic rather than object structure—for example refunds, fulfilment, or approval flows.",
+      concepts: [
+        ["Actions and control flow", "Rounded nodes represent work; arrows show permitted progress through the process."],
+        ["Decision and merge", "A diamond branches on guarded conditions and later merges mutually exclusive paths."],
+        ["Fork and join", "A thick bar splits independent work or waits until parallel branches complete."],
+        ["Swimlanes", "Lanes assign activities to actors, services, or departments and reveal costly hand-offs."],
+        ["Initial and final nodes", "Distinguish the start, a flow termination, and completion of the entire activity."],
+        ["Exception paths", "Model timeouts, rejections, and compensation explicitly when they change the business outcome."]
+      ],
+      checklist: ["Name guards clearly", "Separate decisions from actions", "Use parallelism only when real", "Assign ownership with lanes", "Show termination and compensation"],
+      example: { title: "Order fulfilment", code: "[Order paid]\n   ├─fork→ Reserve inventory ─┐\n   └─fork→ Verify address ────┤ join\n                              ↓\n                         Pack order\n                    [available?] yes/no" },
+      questions: ["Decision versus merge?", "Fork versus branch?", "What do swimlanes reveal?", "How do you model compensation?"]
+    }
+  ],
+
+  projects: [
+    {
+      id: "library-management-system", title: "Library Management System", number: "01", difficulty: "Core", time: "45–60 min",
+      summary: "Model copies, catalog search, loans, reservations, fines, and member limits without confusing a title with a physical item.",
+      focus: ["State", "Strategy", "Repository"],
+      brief: "Design the circulation domain for a multi-branch library. Members search titles, borrow available copies, place holds, renew loans, and return items.",
+      requirements: ["Search by title, author, subject, and identifier", "Track every physical copy and its branch", "Checkout, renew, return, and reserve", "Enforce member and item lending policies", "Calculate overdue fines and notify hold queues"],
+      entities: [["BookTitle", "Bibliographic identity and metadata"], ["BookCopy", "Barcode, branch, and availability state"], ["Member", "Borrowing privileges and active-loan limit"], ["Loan", "Checkout, due date, renewals, and return"], ["Reservation", "FIFO hold position and expiry"], ["Fine", "Assessed and paid amounts"]],
+      flows: [["Checkout", ["Load member and copy", "Validate privileges and availability", "Create loan and mark copy loaned", "Publish checkout event"]], ["Return", ["Close loan", "Calculate overdue charge", "Assign copy to next reservation or make available"]]],
+      decisions: ["BookTitle and BookCopy are separate because one title has many physical copies.", "LendingPolicy calculates limits and due dates so policy changes do not modify Loan.", "A copy state transition is atomic to prevent two checkouts."],
+      edgeCases: ["Lost or damaged copy", "Expired reservation", "Renewal blocked by another member's hold", "Branch transfer while reserved"],
+      api: ["GET /catalog?query=&branch=", "POST /copies/{barcode}/checkout", "POST /loans/{id}/renew", "POST /copies/{barcode}/return", "POST /titles/{id}/reservations"],
+      prompts: ["Where do lending rules belong?", "How would you lock a copy during checkout?", "How does a reservation queue advance?"]
+    },
+    {
+      id: "parking-lot", title: "Parking Lot", number: "02", difficulty: "Core", time: "45–60 min",
+      summary: "Allocate heterogeneous spots, issue tickets, calculate fees, and maintain accurate capacity under concurrent entry.",
+      focus: ["Strategy", "Factory", "Concurrency"],
+      brief: "Design a multi-floor parking facility that supports cars, motorcycles, electric vehicles, accessible spots, display boards, tickets, and payments.",
+      requirements: ["Admit supported vehicles and assign a compatible spot", "Show availability per floor and spot type", "Issue tickets and calculate time-based fees", "Accept multiple payment methods", "Release spots exactly once on exit"],
+      entities: [["ParkingLot", "Entry points, exits, floors, and policies"], ["ParkingFloor", "Spot inventory and display board"], ["ParkingSpot", "Type, occupancy, and optional charger"], ["Vehicle", "Plate and required spot capability"], ["ParkingTicket", "Entry time, spot, and status"], ["Payment", "Amount, method, and result"]],
+      flows: [["Entry", ["Classify vehicle", "Ask allocation strategy for a spot", "Atomically reserve spot", "Create and print ticket"]], ["Exit", ["Validate active ticket", "Calculate fee", "Capture payment", "Close ticket and release spot"]]],
+      decisions: ["SpotAllocationStrategy supports nearest, balanced, or EV-aware assignment.", "FeePolicy handles hourly, slab, and event pricing.", "Reservation uses compare-and-set or a transaction around spot status."],
+      edgeCases: ["Lost ticket", "Payment succeeds but gate fails", "Vehicle overstays after payment", "Two gates select the last spot"],
+      api: ["POST /entries/{gateId}/tickets", "GET /availability", "POST /tickets/{id}/quote", "POST /tickets/{id}/payments", "POST /exits/{gateId}/release"],
+      prompts: ["How do you prevent duplicate allocation?", "Which patterns keep pricing extensible?", "What is the source of truth for availability?"]
+    },
+    {
+      id: "online-shopping-system", title: "Online Shopping System", number: "03", difficulty: "Advanced", time: "60–75 min",
+      summary: "Separate catalog, cart, pricing, inventory, orders, payments, and fulfilment while preserving money and stock invariants.",
+      focus: ["Aggregate", "Saga", "Strategy"],
+      brief: "Design the core domain for a marketplace-style shopping application from product discovery through fulfilment and return.",
+      requirements: ["Browse products and variants", "Maintain a mutable cart", "Apply pricing, tax, and promotion rules", "Reserve stock while placing an order", "Pay, ship, cancel, and return items"],
+      entities: [["Product", "Sellable concept and attributes"], ["SKU", "Variant, price reference, and stock identity"], ["Cart", "Draft selections and quantity changes"], ["Order", "Immutable purchase snapshot and lifecycle"], ["InventoryReservation", "Held quantity with expiry"], ["Shipment", "Package and tracking state"], ["Payment", "Authorization, capture, and refund"]],
+      flows: [["Place order", ["Reprice cart", "Reserve inventory", "Create pending order", "Authorize payment", "Confirm order or compensate reservation"]], ["Return", ["Validate return window", "Create return authorization", "Receive and inspect item", "Refund and restock according to outcome"]]],
+      decisions: ["OrderItem stores a snapshot so later catalog edits do not rewrite history.", "Money is a value object with currency and safe arithmetic.", "Checkout is a saga because inventory and payment are separate resources."],
+      edgeCases: ["Partial shipment", "Coupon becomes invalid during checkout", "Payment callback repeats", "Price changes while item is in cart"],
+      api: ["PUT /carts/{id}/items/{sku}", "POST /carts/{id}/quote", "POST /orders", "POST /orders/{id}/cancel", "POST /orders/{id}/returns"],
+      prompts: ["Cart versus Order responsibilities?", "How do you prevent overselling?", "Where is idempotency required?"]
+    },
+    {
+      id: "stack-overflow", title: "Stack Overflow", number: "04", difficulty: "Advanced", time: "55–70 min",
+      summary: "Model questions, answers, comments, voting, reputation, moderation, and searchable tagging.",
+      focus: ["Policy", "Observer", "Authorization"],
+      brief: "Design a collaborative question-and-answer domain with community ranking and moderation rules.",
+      requirements: ["Post and edit questions, answers, and comments", "Tag and search questions", "Upvote or downvote once per user", "Accept one answer", "Update reputation and enforce moderation privileges"],
+      entities: [["Question", "Title, body, tags, state, and accepted answer"], ["Answer", "Body, author, and vote score"], ["Comment", "Short discussion attached to a post"], ["Vote", "Voter, target, and direction"], ["User", "Identity and reputation"], ["Revision", "Auditable content history"], ["Flag", "Moderation reason and resolution"]],
+      flows: [["Vote", ["Check eligibility and uniqueness", "Store or replace vote", "Recalculate score", "Emit reputation event"]], ["Accept answer", ["Verify question ownership", "Replace previous accepted answer if any", "Update reputation atomically"]]],
+      decisions: ["Question and Answer implement a Post capability but keep distinct rules.", "ReputationPolicy converts domain events into deltas.", "AuthorizationPolicy evaluates role plus reputation threshold."],
+      edgeCases: ["Vote reversal", "Deleted accepted answer", "Concurrent edits", "Reputation recalculation after moderation"],
+      api: ["POST /questions", "POST /questions/{id}/answers", "PUT /posts/{id}/vote", "POST /questions/{id}/accepted-answer", "POST /posts/{id}/flags"],
+      prompts: ["How do you avoid duplicate votes?", "Would score be stored or derived?", "How are edits audited?"]
+    },
+    {
+      id: "movie-ticket-booking", title: "Movie Ticket Booking System", number: "05", difficulty: "Advanced", time: "60–75 min",
+      summary: "Coordinate show inventory, temporary seat holds, payment, booking, cancellation, and refunds.",
+      focus: ["State", "Expiry", "Concurrency"],
+      brief: "Design seat booking across cinemas, auditoriums, movies, and shows with contention for popular seats.",
+      requirements: ["Browse cinemas, movies, and shows", "Display seat availability and pricing", "Hold selected seats temporarily", "Confirm after payment", "Cancel and refund under policy"],
+      entities: [["Movie", "Content metadata"], ["Cinema", "Venue containing auditoriums"], ["Auditorium", "Physical seat layout"], ["Show", "Movie, auditorium, start time, and inventory"], ["ShowSeat", "Per-show seat state and price"], ["SeatHold", "Owner, seats, and expiry"], ["Booking", "Confirmed seats and amount"], ["Payment", "Authorization and refund state"]],
+      flows: [["Hold seats", ["Validate seats belong to show", "Atomically transition AVAILABLE to HELD", "Create expiring hold", "Return hold token"]], ["Confirm", ["Validate unexpired hold", "Authorize payment idempotently", "Create booking", "Transition HELD to BOOKED"]]],
+      decisions: ["Physical Seat is separate from ShowSeat because availability changes per show.", "SeatHold owns expiry; a sweeper releases abandoned holds.", "A database constraint or conditional update prevents double booking."],
+      edgeCases: ["Hold expires during payment", "Payment succeeds after timeout", "Partial seat update", "Show cancellation"],
+      api: ["GET /shows/{id}/seats", "POST /shows/{id}/holds", "POST /holds/{id}/confirm", "DELETE /holds/{id}", "POST /bookings/{id}/cancel"],
+      prompts: ["How do you guarantee one winner for a seat?", "Where does dynamic pricing live?", "How do late payment callbacks reconcile?"]
+    },
+    {
+      id: "atm", title: "ATM", number: "06", difficulty: "Core", time: "45–60 min",
+      summary: "Design session security, transaction states, bank authorization, cash dispensing, and failure recovery.",
+      focus: ["State", "Chain", "Command"],
+      brief: "Design an ATM that authenticates cardholders and supports balance inquiry, withdrawal, deposit, and receipt generation.",
+      requirements: ["Read card and authenticate PIN", "Select account and transaction", "Authorize through bank service", "Dispense exact cash", "Handle cancellation, timeout, and device failure"],
+      entities: [["ATM", "Coordinates devices and current session"], ["Session", "Cardholder authentication and selected account"], ["Transaction", "Template for withdrawal, deposit, and inquiry"], ["CashDispenser", "Cassette inventory and dispense plan"], ["CardReader", "Card capture and ejection"], ["BankGateway", "External authorization contract"]],
+      flows: [["Withdrawal", ["Authenticate session", "Validate amount and limits", "Authorize debit", "Dispense notes", "Complete or reverse debit"]], ["Cash planning", ["Ask cassette chain for a note combination", "Reserve note counts", "Drive dispenser", "Commit counts after sensor confirmation"]]],
+      decisions: ["ATM states restrict legal actions: Idle, CardInserted, Authenticated, Processing, OutOfService.", "Transaction uses a command/template structure for shared audit behaviour.", "BankGateway isolates protocol and vendor changes."],
+      edgeCases: ["Cash jams after account debit", "Insufficient note denominations", "Card retained", "Network loss during authorization"],
+      api: ["authenticate(cardToken, pin)", "withdraw(sessionId, accountId, amount)", "reverse(transactionId)", "getBalance(sessionId, accountId)"],
+      prompts: ["Debit first or dispense first?", "How is a failed withdrawal compensated?", "How does the note-selection algorithm work?"]
+    },
+    {
+      id: "airline-management-system", title: "Airline Management System", number: "07", difficulty: "Advanced", time: "65–80 min",
+      summary: "Model schedules, flight instances, aircraft, seats, fares, bookings, passengers, and operational changes.",
+      focus: ["Aggregate", "State", "Events"],
+      brief: "Design passenger booking and operational scheduling for an airline, including seat assignment and disrupted flights.",
+      requirements: ["Publish routes and dated flights", "Search itineraries and fare classes", "Hold and book seats for passengers", "Check in and issue boarding passes", "Cancel, delay, or reassign aircraft"],
+      entities: [["Route", "Origin and destination"], ["FlightSchedule", "Recurring service definition"], ["FlightInstance", "Dated operation and status"], ["Aircraft", "Tail identity and seat map"], ["Fare", "Cabin, rules, and price"], ["Reservation", "Passengers, segments, and ticketing state"], ["BoardingPass", "Seat, gate, and boarding group"]],
+      flows: [["Book itinerary", ["Price chosen segments", "Hold fare and seat inventory", "Create reservation", "Capture payment and issue tickets"]], ["Aircraft swap", ["Assign new aircraft", "Map or release seat assignments", "Notify affected passengers", "Open exception queue"]]],
+      decisions: ["FlightSchedule is a template; FlightInstance contains date-specific state.", "Reservation is the consistency boundary for passengers and segments.", "Operational events drive notifications and re-accommodation."],
+      edgeCases: ["Aircraft type changes", "Connecting segment cancelled", "Overbooking", "Time-zone and daylight-saving changes"],
+      api: ["GET /flights/search", "POST /itinerary-holds", "POST /reservations", "POST /reservations/{id}/check-in", "POST /flight-instances/{id}/aircraft"],
+      prompts: ["Schedule versus instance?", "How do you model a multi-leg itinerary?", "What happens after an aircraft swap?"]
+    },
+    {
+      id: "blackjack", title: "Blackjack and a Deck of Cards", number: "08", difficulty: "Core", time: "40–55 min",
+      summary: "Create reusable card primitives and a blackjack engine with explicit turn and scoring rules.",
+      focus: ["State", "Strategy", "Value objects"],
+      brief: "Design a card framework and a blackjack game supporting players, dealer actions, bets, dealing, scoring, and outcomes.",
+      requirements: ["Create, shuffle, and deal one or more decks", "Place and validate bets", "Run player and dealer turns", "Score soft and hard aces", "Settle win, loss, push, and blackjack"],
+      entities: [["Card", "Immutable rank and suit"], ["Shoe", "Shuffled cards and draw position"], ["Hand", "Cards and score calculation"], ["Participant", "Player or dealer capability"], ["Round", "Bets, turns, and outcome"], ["Table", "Seat and betting limits"]],
+      flows: [["Round", ["Accept bets", "Deal initial cards", "Offer player actions", "Play dealer policy", "Compare hands and settle"]], ["Score hand", ["Sum non-aces", "Count aces as eleven initially", "Reduce aces to one until total is safe"]]],
+      decisions: ["Card and Money are immutable value objects.", "DealerPolicy and PlayerActionStrategy separate decision rules from Round.", "Round state rejects actions outside the participant's turn."],
+      edgeCases: ["Split and double-down", "Multiple aces", "Empty shoe", "Player disconnects mid-round"],
+      api: ["table.join(player)", "round.placeBet(player, amount)", "round.hit(player)", "round.stand(player)", "round.settle()"],
+      prompts: ["Where does scoring live?", "How do you add poker without polluting blackjack classes?", "What states can a round enter?"]
+    },
+    {
+      id: "hotel-management-system", title: "Hotel Management System", number: "09", difficulty: "Advanced", time: "60–75 min",
+      summary: "Coordinate room types, rate plans, reservations, stays, services, housekeeping, and folio settlement.",
+      focus: ["Availability", "Strategy", "State"],
+      brief: "Design booking and stay operations for a hotel with room categories, date-range availability, add-on services, and payments.",
+      requirements: ["Search room availability by date and occupancy", "Quote rate plans and taxes", "Reserve a room type, then assign a room", "Check in, add charges, and check out", "Track housekeeping and maintenance state"],
+      entities: [["RoomType", "Capacity and amenities"], ["Room", "Physical unit and operational state"], ["RatePlan", "Pricing and cancellation policy"], ["Reservation", "Guest, dates, room type, and status"], ["Stay", "Assigned room and check-in lifecycle"], ["Folio", "Charges, payments, and balance"], ["ServiceCharge", "Dining, minibar, or other charge"]],
+      flows: [["Reserve", ["Check date-range inventory", "Calculate quote", "Hold room-type capacity", "Guarantee reservation with payment method"]], ["Check out", ["Post final services", "Calculate balance", "Capture payment", "Close stay and mark room dirty"]]],
+      decisions: ["Sell room-type inventory before assigning a physical room.", "RateStrategy supports seasonal, corporate, and promotional rates.", "Folio is an append-oriented ledger rather than a mutable total."],
+      edgeCases: ["Early arrival", "Late checkout", "Room becomes unavailable before check-in", "Split payment across guests"],
+      api: ["GET /availability?from=&to=&guests=", "POST /reservations", "POST /stays/{id}/check-in", "POST /folios/{id}/charges", "POST /stays/{id}/check-out"],
+      prompts: ["Why reserve a room type?", "How is overlapping availability calculated?", "Where do cancellation rules live?"]
+    },
+    {
+      id: "restaurant-management-system", title: "Restaurant Management System", number: "10", difficulty: "Advanced", time: "55–70 min",
+      summary: "Combine table reservations, waitlists, menu availability, kitchen tickets, orders, bills, and staff hand-offs.",
+      focus: ["State", "Observer", "Composite"],
+      brief: "Design front-of-house and kitchen workflows for a dine-in restaurant, from reservation to settlement.",
+      requirements: ["Reserve tables and manage a waitlist", "Seat parties with capacity constraints", "Create orders with item modifiers", "Send courses to kitchen stations", "Split, discount, and settle bills"],
+      entities: [["Table", "Capacity, section, and occupancy"], ["Reservation", "Party size, time window, and status"], ["MenuItem", "Price, modifiers, and availability"], ["Order", "Table, server, items, and course state"], ["KitchenTicket", "Station-specific preparation work"], ["Bill", "Charges, adjustments, and payments"]],
+      flows: [["Place order", ["Validate menu availability", "Add items and modifiers", "Route items to kitchen stations", "Track preparation events"]], ["Settle bill", ["Choose split method", "Apply authorized adjustments", "Capture one or more payments", "Close table"]]],
+      decisions: ["OrderItem stores price and modifier snapshots.", "KitchenTicket subscribes to order submission and groups items by station.", "Bill composes charge lines and supports split strategies."],
+      edgeCases: ["No-show reservation", "Item becomes unavailable", "One payment fails in a split", "Order item voided after preparation"],
+      api: ["POST /reservations", "POST /tables/{id}/seat", "POST /orders/{id}/items", "POST /orders/{id}/submit", "POST /bills/{id}/payments"],
+      prompts: ["Order versus kitchen ticket?", "How do you model modifiers?", "How is a partially paid bill handled?"]
+    },
+    {
+      id: "chess", title: "Chess", number: "11", difficulty: "Core", time: "50–65 min",
+      summary: "Model board state, legal movement, turn control, check detection, special moves, and reproducible history.",
+      focus: ["Strategy", "Command", "Rules engine"],
+      brief: "Design an in-memory chess engine that validates moves and determines game outcomes; UI and AI are outside the core scope.",
+      requirements: ["Initialize a standard board", "Validate piece movement and occupancy", "Prevent moves that expose own king", "Support castling, promotion, and en passant", "Detect checkmate, stalemate, draw, and resignation"],
+      entities: [["Game", "Turn, status, players, and history"], ["Board", "Position-to-piece mapping"], ["Piece", "Colour and movement capability"], ["Move", "Source, target, captures, and special metadata"], ["Position", "Immutable rank and file"], ["RuleSet", "Legality and terminal-state rules"]],
+      flows: [["Make move", ["Confirm current player", "Generate candidate move", "Apply to a copy or reversible board", "Reject if own king is attacked", "Commit and evaluate outcome"]], ["Undo for analysis", ["Store move command with prior state", "Reverse capture and special effects", "Restore turn and status"]]],
+      decisions: ["MovementStrategy varies by piece while RuleSet handles global legality.", "Move is a command and audit record.", "Board exposes queries but Game controls turn progression."],
+      edgeCases: ["Pinned piece", "Castling through check", "Promotion choice", "Threefold repetition and fifty-move rule"],
+      api: ["game.legalMoves(position)", "game.move(from, to, promotion)", "game.status()", "game.resign(player)", "game.history()"],
+      prompts: ["Piece rule versus global rule?", "How do you test checkmate?", "Mutable board or immutable snapshots?"]
+    },
+    {
+      id: "stock-brokerage-system", title: "Online Stock Brokerage System", number: "12", difficulty: "Advanced", time: "70–90 min",
+      summary: "Model accounts, instruments, orders, executions, positions, cash, compliance checks, and market connectivity.",
+      focus: ["State", "Ledger", "Event-driven"],
+      brief: "Design the order-management domain of a retail brokerage. A separate exchange performs matching.",
+      requirements: ["Maintain brokerage accounts and watchlists", "Submit market and limit orders", "Track partial fills and cancellation", "Maintain cash and positions", "Apply buying-power and compliance checks"],
+      entities: [["BrokerageAccount", "Ownership, permissions, and restrictions"], ["Instrument", "Symbol and market identity"], ["Order", "Side, type, quantity, price, and lifecycle"], ["Execution", "A fill received from the venue"], ["Position", "Quantity and cost basis view"], ["CashLedger", "Append-only monetary entries"], ["MarketGateway", "Order routing and execution events"]],
+      flows: [["Submit order", ["Validate session and instrument", "Run risk and compliance checks", "Reserve buying power", "Persist order before routing", "Send with idempotency key"]], ["Apply fill", ["Deduplicate execution", "Update filled quantity", "Post cash and position ledger entries", "Release excess reservation"]]],
+      decisions: ["Order is a state machine: New, Accepted, PartiallyFilled, Filled, Cancelled, Rejected.", "Executions are immutable and deduplicated by venue identifier.", "Positions and balances are projections over auditable ledgers."],
+      edgeCases: ["Fill arrives during cancellation", "Duplicate venue callback", "Trading halt", "Corporate action changes position"],
+      api: ["POST /accounts/{id}/orders", "DELETE /orders/{id}", "GET /orders/{id}", "GET /accounts/{id}/positions", "POST /market-events/executions"],
+      prompts: ["How are partial fills represented?", "Where is buying power reserved?", "Why use a ledger?"]
+    },
+    {
+      id: "car-rental-system", title: "Car Rental System", number: "13", difficulty: "Advanced", time: "55–70 min",
+      summary: "Reserve vehicle classes across branches, assign cars, capture inspections, price rentals, and handle extensions.",
+      focus: ["Strategy", "State", "Availability"],
+      brief: "Design customer booking and branch operations for a rental company with vehicle categories and one-way rentals.",
+      requirements: ["Search availability by location and date", "Reserve a vehicle category", "Assign and inspect a specific vehicle", "Start, extend, and close a rental", "Calculate add-ons, fuel, distance, damage, and late fees"],
+      entities: [["VehicleClass", "Category and rental constraints"], ["Vehicle", "VIN, branch, odometer, fuel, and status"], ["Reservation", "Class, dates, pickup, and drop-off"], ["RentalAgreement", "Assigned vehicle and contractual state"], ["Inspection", "Condition evidence and readings"], ["RatePlan", "Base rate and policy"], ["Charge", "Rental and adjustment line"]],
+      flows: [["Pickup", ["Validate reservation and driver", "Choose eligible vehicle", "Record pre-rental inspection", "Authorize deposit", "Open agreement"]], ["Return", ["Record readings and condition", "Compute time, distance, fuel, and damage charges", "Capture balance", "Route vehicle to cleaning or maintenance"]]],
+      decisions: ["Reservation targets a class; RentalAgreement identifies the assigned vehicle.", "PricingStrategy composes duration, location, add-on, and penalty rules.", "Vehicle state separates Available, Held, Rented, Cleaning, and Maintenance."],
+      edgeCases: ["Reserved class unavailable", "One-way inventory imbalance", "Extension overlaps next hold", "Disputed damage"],
+      api: ["GET /vehicles/availability", "POST /reservations", "POST /reservations/{id}/pickup", "POST /rentals/{id}/extend", "POST /rentals/{id}/return"],
+      prompts: ["Why reserve a class rather than a VIN?", "How do extensions affect availability?", "How is damage evidence modelled?"]
+    },
+    {
+      id: "linkedin", title: "LinkedIn", number: "14", difficulty: "Advanced", time: "60–75 min",
+      summary: "Model professional identities, connections, follows, posts, feeds, messaging, jobs, and notifications.",
+      focus: ["Graph", "Privacy", "Events"],
+      brief: "Design the object model and service boundaries for a professional social network; focus on core interactions rather than global-scale infrastructure.",
+      requirements: ["Maintain profiles and experience", "Send and accept connection invitations", "Follow people and companies", "Publish posts and comments", "Message connections and receive notifications", "Publish and apply to jobs"],
+      entities: [["Member", "Account and professional profile"], ["ConnectionInvitation", "Directed request and lifecycle"], ["Connection", "Accepted symmetric relationship"], ["Follow", "Asymmetric subscription"], ["Post", "Author, content, visibility, and engagement"], ["Conversation", "Participants and messages"], ["JobPosting", "Company role and application rules"], ["JobApplication", "Candidate snapshot and status"]],
+      flows: [["Connect", ["Validate neither blocked nor already connected", "Create pending invitation", "Accept idempotently", "Create connection and notify both sides"]], ["Publish post", ["Validate audience policy", "Store post", "Emit publication event", "Fan out or make available to feed ranking"]]],
+      decisions: ["Connection and Follow remain separate because symmetry and permissions differ.", "VisibilityPolicy determines who can read content.", "Notifications consume domain events instead of being called by every feature."],
+      edgeCases: ["Crossed connection invitations", "Blocked member", "Profile visibility change", "Message sent as connection is removed"],
+      api: ["POST /members/{id}/invitations", "POST /invitations/{id}/accept", "POST /posts", "GET /feed", "POST /conversations/{id}/messages", "POST /jobs/{id}/applications"],
+      prompts: ["How is a connection represented?", "Where are privacy rules enforced?", "How would feed generation evolve at scale?"]
+    },
+    {
+      id: "cricinfo", title: "Cricinfo", number: "15", difficulty: "Advanced", time: "60–75 min",
+      summary: "Represent cricket formats, teams, innings, overs, deliveries, scorecards, commentary, and live derived statistics.",
+      focus: ["Events", "State", "Projections"],
+      brief: "Design a live cricket scoring domain that records ball-by-ball events and serves consistent scorecards.",
+      requirements: ["Schedule matches and squads", "Configure format and playing conditions", "Record toss, innings, overs, and deliveries", "Handle extras, wickets, and substitutions", "Generate scorecards and live commentary"],
+      entities: [["Match", "Teams, venue, format, and lifecycle"], ["PlayingXI", "Selected players and roles"], ["Innings", "Batting side, score, wickets, and overs"], ["Over", "Bowler and legal deliveries"], ["Delivery", "Immutable scoring event"], ["Wicket", "Dismissal type and participants"], ["Scorecard", "Projection of batting and bowling figures"], ["Commentary", "Narrative attached to events"]],
+      flows: [["Record delivery", ["Validate match and innings state", "Append delivery event", "Apply runs, extras, wicket, and legal-ball rules", "Update projections and publish live event"]], ["Close innings", ["Evaluate wickets, overs, declaration, or chase result", "Finalize projections", "Start next innings or complete match"]]],
+      decisions: ["Delivery is immutable; corrections append an amendment rather than silently rewriting history.", "FormatRules handles Test, ODI, and T20 differences.", "Scorecard is a rebuildable projection of delivery events."],
+      edgeCases: ["No-ball plus run-out", "Retired hurt", "Rain-adjusted target", "Correcting a previous delivery"],
+      api: ["POST /matches", "POST /matches/{id}/innings", "POST /innings/{id}/deliveries", "POST /deliveries/{id}/corrections", "GET /matches/{id}/scorecard"],
+      prompts: ["What is the source of truth?", "How are format rules isolated?", "How do corrections propagate?"]
+    },
+    {
+      id: "facebook", title: "Facebook — Social Network", number: "16", difficulty: "Advanced", time: "65–80 min",
+      summary: "Design friendships, pages, groups, posts, reactions, comments, privacy, feeds, and notification fan-out.",
+      focus: ["Graph", "Policy", "Event-driven"],
+      brief: "Design the low-level domain and service collaboration for a general social network, emphasizing relationship and content rules.",
+      requirements: ["Create profiles, pages, and groups", "Manage friend requests and friendships", "Publish audience-scoped posts", "React, comment, share, and report", "Assemble a feed and send notifications"],
+      entities: [["User", "Identity and privacy defaults"], ["FriendRequest", "Directed invitation and status"], ["Friendship", "Accepted symmetric edge"], ["Page", "Public entity with administrators"], ["Group", "Membership and posting policy"], ["Post", "Author, destination, audience, and content"], ["Reaction", "User, target, and reaction type"], ["Comment", "Threaded response"], ["Notification", "Recipient-facing event view"]],
+      flows: [["Publish", ["Authorize author against destination", "Resolve audience policy", "Store post", "Emit event for feed and notification consumers"]], ["Request friendship", ["Reject self, duplicate, or blocked relationship", "Create pending request", "Accept into one friendship edge", "Invalidate relationship caches"]]],
+      decisions: ["Actor can be a User, Page, or Group-facing identity, but permissions remain explicit.", "AudiencePolicy combines post selection with current relationship state.", "Reaction has a uniqueness rule per user and target."],
+      edgeCases: ["Blocked user views an old share", "Group membership revoked", "Post audience changes", "Two opposite friend requests arrive"],
+      api: ["POST /friend-requests", "POST /friend-requests/{id}/accept", "POST /posts", "PUT /posts/{id}/audience", "PUT /content/{id}/reaction", "GET /feed"],
+      prompts: ["How do friendship and follow differ?", "When is privacy evaluated?", "How do you keep notifications decoupled?"]
+    }
+  ]
+};
